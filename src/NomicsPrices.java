@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
 public class NomicsPrices {
 
 	/**
@@ -37,12 +38,13 @@ public class NomicsPrices {
 	 * @param quoteCurrency		Quote currency to return against
 	 * @return
 	 * @throws JSONException 
+	 * @throws IOException 
 	 */
-	public String getAllPrices( String key, String quoteCurrency ) throws JSONException
+	public String getAllPrices( String key, String quoteCurrency ) throws JSONException, IOException
 	{
 		
 		//Grab all USD pairs
-		JSONArray response = new JSONArray( getAllPrices( key, quoteCurrency ) );
+		JSONArray response = new JSONArray( getAllPrices( key ) );
 		
 		//Call method to get USD price of quotted currency
 		BigDecimal quotePrice  = findPriceOfCurrency( response, quoteCurrency );
@@ -93,7 +95,7 @@ public class NomicsPrices {
 			BigDecimal price = new BigDecimal( prices.getJSONObject( i ).getString( "price" ) )
 								  				.setScale( PRECISION, BigDecimal.ROUND_DOWN );
 			
-			BigDecimal quotedPrice = price.divide( quoteCurrencyValueInUSD ).setScale( PRECISION, BigDecimal.ROUND_DOWN );
+			BigDecimal quotedPrice = price.divide( quoteCurrencyValueInUSD, BigDecimal.ROUND_DOWN ).setScale( PRECISION, BigDecimal.ROUND_DOWN );
 			
 			//Convert price to new quote price
 			JSONObject currencyPricePair = new JSONObject( );
@@ -124,16 +126,15 @@ public class NomicsPrices {
 	public static void main( String args[] )
 	{
 		NomicsPrices nomicsPrices = new NomicsPrices( );
-		String key = args[1];
+		String key = args[ 0 ];
 		
 		try
 		{
-			System.out.println( nomicsPrices.getAllPrices( key, "ETH" ) );
+			System.out.println( nomicsPrices.getAllPrices( key, "BTC" ) );
 		}
-		
 		catch( Exception e )
 		{
-			
+			System.out.println( e.getStackTrace( ) );
 		}
 	}
 }
