@@ -6,4 +6,6 @@ public class NomicsAggregatedCandles {
 	 */
 	private static final String URL = "https://api.nomics.com/v1/candles?interval=%s&currency=%s";
 	
+	
+	
 }

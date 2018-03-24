@@ -1,5 +1,6 @@
 import java.io.IOException;
 
+import org.json.JSONObject;
 public class NomicsPrices {
 
 	/**
@@ -7,7 +8,18 @@ public class NomicsPrices {
 	 */
 	private static final String URL = "https://api.nomics.com/v1/prices?key=%s";
 	
-	//public String getAllPrices( String quoteCurrency )
+	/**
+	 * Filtered layer on top of getAllPrices to grab prices based 
+	 * on a specific quote currency as the desired base ie. when quoteCurrency
+	 * == ETH prices will be returned against ETH
+	 * @param key				Private API key
+	 * @param quoteCurrency		Quote currency to return against
+	 * @return
+	 */
+	public String getAllPrices( String key, String quoteCurrency )
+	{
+		JSONObject response = new JSONObject( getAllPrices( key, quoteCurrency ) );
+	}
 	
 	public String getAllPrices( String key ) throws IOException
 	{
