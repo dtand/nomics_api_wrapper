@@ -114,10 +114,14 @@ public class NomicsMarkets {
 			System.out.println( nomicsMarkets.getAllMarkets( args[0] ) );
 			System.out.println( nomicsMarkets.getMarketsByExchange( args[0], "gdax" ) );
 		} 
-		catch ( IOException | JSONException e ) 
+		catch ( IOException e ) 
 		{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		}
+		catch( JSONException e )
+		{
+			e.printStackTrace( );
 		}
 	}
 	

@@ -1,8 +1,41 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  
   <modelVersion>4.0.0</modelVersion>
+  
   <groupId>NomicsWrapper</groupId>
+  
   <artifactId>NomicsWrapper</artifactId>
+  
   <version>0.0.1-SNAPSHOT</version>
+  
+  <packaging>jar</packaging>
+  
+  <name>nomics-api-wrapper</name>
+  <description>A simple and intuitive wrapper for the nomics API</description>
+  <url>https://github.com/dtand/nomics_api_wrapper</url>
+  
+   <licenses>
+	  <license>
+	    <name>MIT License</name>
+	    <url>http://www.opensource.org/licenses/mit-license.php</url>
+	  </license>
+   </licenses>
+   
+   <developers>
+    <developer>
+      <name>Daniel Anderson</name>
+      <email>dtanderson005@gmail.com</email>
+      <organization>Travas Research</organization>
+      <organizationUrl>http://www.travas.io</organizationUrl>
+    </developer>
+  </developers>
+
+<scm>
+  <connection>scm:git:git://github.com/dtand/nomics_api_wrapper.git</connection>
+  <developerConnection>scm:git:ssh://github.com:dtand/nomics_api_wrapper.git</developerConnection>
+  <url>http://github.com/dtand/nomics_api_wrapper</url>
+</scm>
+  
   <build>
     <sourceDirectory>src</sourceDirectory>
     <plugins>
@@ -19,13 +52,13 @@
   
   <dependencies>
   
-	  <!-- https://mvnrepository.com/artifact/org.json/json -->
+	<!-- https://mvnrepository.com/artifact/org.json/json -->
 	<dependency>
 	    <groupId>org.json</groupId>
 	    <artifactId>json</artifactId>
 	    <version>20090211</version>
 	</dependency>
 	
-</dependencies>
+  </dependencies>
   
 </project>

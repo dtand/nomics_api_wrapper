@@ -90,9 +90,13 @@ public class NomicsExchangeCandles {
 		{
 			System.out.println( nomicsExchangeCandles.getMostRecentCandle( args[0], "1h", "gdax", "BTC-USD") );
 		} 
-		catch ( IOException | JSONException e ) 
+		catch ( IOException e ) 
 		{
 			e.printStackTrace();
+		}
+		catch( JSONException e )
+		{
+			e.printStackTrace( );
 		}
 	}
 	
