@@ -10,7 +10,7 @@ public class NomicsAggregatedCandles {
 	/**
 	 * Public method to grab all the aggregated candles for a given currency (symbol) from date == unixTimestamp
 	 * @param key				The private API key
-	 * @param unixTimestamp		The date to grab the candles from
+	 * @param unixTimestamp		The date to grab the candles from ie. 'YYYY-MM-DDTHH:mm:ss.sssZ'
 	 * @param symbol				The symbol of queried currency
 	 * @return					A String representing a JSON array of candles
 	 * @throws IOException
@@ -39,13 +39,12 @@ public class NomicsAggregatedCandles {
 		
 		try
 		{
-			System.out.println( nomicsPrices.getAllPrices( key, "BTC" ) );
+			System.out.println( nomicsAggregatedCandles.getCandlesFromTimestamp( key, "2017-01-01", "ETH" ) );
 		}
 		catch( Exception e )
 		{
 			System.out.println( e.getStackTrace( ) );
 		}
-	}
 	}
 	
 }
