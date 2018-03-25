@@ -5,6 +5,26 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+/**
+ * The nomics prices API provides access to all the prices in USD of a desired currency.  The
+ * API returns a list of curreny/price pairs where price is measured in USD.
+ * The class also includes any layer two filters for additional functionality such as
+ * converting the value to a different "quote currency" ie. measuring value in ETH rather
+ * than USD.  An example of the API is shown below:
+ * 
+ * HTTPS GET: https://api.nomics.com/v1/prices?key=1234
+ * 
+ * [
+ * {
+ *   "currency":"BTC",
+ *   "price": "8909.7211"
+ * },
+ * ...
+ * ]
+ * 
+ * @author danielanderson
+ *
+ */
 public class NomicsPrices {
 
 	/**

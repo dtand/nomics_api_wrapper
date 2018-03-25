@@ -1,5 +1,25 @@
 import java.io.IOException;
 
+/**
+ * Wrapper for the nomics aggregated candles API.  This class includes the vanilla API 
+ * call along with any additional layer two filters on top.  API example is shown below:
+ * 
+ * HTTPS GET: https://api.nomics.com/v1/candles?key=1234&interval=1h&currency=BTC
+ * 
+ * [
+ * {
+ *   "timestamp": "2018-03-19T10:00:00Z",
+ *   "low": "7024.32225",
+ *   "open": "8276.19407",
+ *   "close": "8281.17307",
+ *   "high": "8566.43000",
+ *   "volume": "59624801"
+ * },
+ * ]
+ * 
+ * @author danielanderson
+ *
+ */
 public class NomicsAggregatedCandles {
 
 	/**
@@ -32,6 +52,10 @@ public class NomicsAggregatedCandles {
 		return String.format( URL, key, unixTimestamp, symbol );
 	}
 	
+	/**
+	 * Main method to test using args to grab key
+	 * @param args
+	 */
 	public static void main( String[] args )
 	{
 		NomicsAggregatedCandles nomicsAggregatedCandles = new NomicsAggregatedCandles( );
