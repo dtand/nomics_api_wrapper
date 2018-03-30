@@ -76,7 +76,7 @@ public class NomicsExchangeCandles {
 	 */
 	private String buildURL( String key, String interval, String exchange, String symbol )
 	{
-		return String.format( URL, key, "1h", "binance", "ETHUSDT" );
+		return String.format( URL, key, interval, exchange, symbol );
 	}
 	
 	/**

@@ -1,5 +1,5 @@
-/Users/danielanderson/eclipse-workspace/NomicsWrapper/src/NomicsMarkets.java
-/Users/danielanderson/eclipse-workspace/NomicsWrapper/src/NomicsAggregatedCandles.java
-/Users/danielanderson/eclipse-workspace/NomicsWrapper/src/NomicsPrices.java
-/Users/danielanderson/eclipse-workspace/NomicsWrapper/src/NomicsExchangeCandles.java
-/Users/danielanderson/eclipse-workspace/NomicsWrapper/src/HttpsClient.java
+/Users/danielanderson/eclipse-workspace/NomicsWrapper/src/nomics/core/NomicsMarkets.java
+/Users/danielanderson/eclipse-workspace/NomicsWrapper/src/nomics/core/NomicsAggregatedCandles.java
+/Users/danielanderson/eclipse-workspace/NomicsWrapper/src/nomics/core/NomicsPrices.java
+/Users/danielanderson/eclipse-workspace/NomicsWrapper/src/nomics/core/HttpsClient.java
+/Users/danielanderson/eclipse-workspace/NomicsWrapper/src/nomics/core/NomicsExchangeCandles.java

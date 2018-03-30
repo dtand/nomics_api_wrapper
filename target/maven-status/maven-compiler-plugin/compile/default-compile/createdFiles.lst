@@ -1,0 +1,5 @@
+nomics/core/NomicsMarkets.class
+nomics/core/NomicsAggregatedCandles.class
+nomics/core/NomicsPrices.class
+nomics/core/HttpsClient.class
+nomics/core/NomicsExchangeCandles.class
