@@ -61,7 +61,7 @@ public class NomicsExchangeCandles {
 	{
 		JSONArray allCandles = new JSONArray ( getExchangeCandles( key, interval, exchange, symbol ) );
 		
-		JSONObject lastCandle = allCandles.getJSONObject( 0 );
+		JSONObject lastCandle = allCandles.getJSONObject( allCandles.length( ) - 1 );
 		
 		return lastCandle.toString( ); 
 	}
@@ -93,7 +93,7 @@ public class NomicsExchangeCandles {
 		} 
 		catch ( IOException e ) 
 		{
-			e.printStackTrace();
+			e.printStackTrace(); 
 		}
 		catch( JSONException e )
 		{
