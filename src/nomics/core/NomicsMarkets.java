@@ -1,4 +1,4 @@
-package core;
+package nomics.core;
 import java.io.IOException;
 
 import org.json.JSONArray;
