@@ -1,5 +1,8 @@
 package nomics.core;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -70,7 +73,7 @@ public class NomicsMarkets {
 	}
 	
 	/**
-	 * Method to grab an array list of markets at the exchange level - provided some JSONArray
+	 * Method to grab a json array of markets at the exchange level - provided some JSONArray
 	 * @param markets	JSONArray of market objects
 	 * @return
 	 * @throws JSONException 
@@ -90,6 +93,33 @@ public class NomicsMarkets {
 		}
 		
 		return marketsByExchange.toString( );
+	}
+	
+	/**
+	 * Call to get a List of strings containing the currently supported exchanges
+	 * by the nomics API
+	 * @return	List of strings with supported markets ie. [ "binance", "gdax" ... ]
+	 * @throws JSONException 
+	 * @throws IOException 
+	 */
+	public List<String> getSupportedExchanges( String key ) throws JSONException, IOException
+	{
+		JSONArray response 		 		 = new JSONArray( getAllMarkets( key ) );
+		HashSet< String > exchanges		 = new HashSet< String >( );
+		List< String > supportedExchanges = new ArrayList< String >( );
+		
+		for( int i = 0; i < response.length( ); i++ )
+		{
+			String exchange = response.getJSONObject( i ).getString( "exchange" );
+			
+			if(  !exchanges.contains( exchange ) )
+			{
+				exchanges.add( exchange );
+				supportedExchanges.add( exchange );
+			}
+		}
+		
+		return supportedExchanges;	
 	}
 	
 	/**
@@ -115,6 +145,7 @@ public class NomicsMarkets {
 			System.out.println( nomicsMarkets.getAllMarkets( args[0] ) );
 			System.out.println( nomicsMarkets.getMarketsByExchange( args[0], "gdax" ) );
 		} 
+		
 		catch ( IOException e ) 
 		{
 			// TODO Auto-generated catch block
