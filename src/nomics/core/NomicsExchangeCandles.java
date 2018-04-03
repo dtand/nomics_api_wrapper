@@ -1,5 +1,6 @@
 package nomics.core;
 import java.io.IOException;
+import java.math.BigDecimal;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -67,6 +68,32 @@ public class NomicsExchangeCandles {
 	}
 	
 	/**
+	 * Returns the all time high of a given market pair at the exchange level
+	 * @param key		The private key for the nomics API
+	 * @param interval	Kline interval: Valid values: 1d, 1h, 30m, 5m, 1m
+	 * @param exchange	The id for the exchange ie. "binance", "gdax" ...
+	 * @param symbol		The symbol for the currency of iterest, ie: "ETH", "LTC", "BTC"
+	 * @return
+	 * @throws IOException 
+	 * @throws JSONException 
+	 */
+	public BigDecimal getAllTimeHigh( String key, String interval, String exchange, String symbol ) throws JSONException, IOException
+	{
+		JSONArray allCandles = new JSONArray ( getExchangeCandles( key, interval, exchange, symbol ) );
+		BigDecimal maxPrice  = new BigDecimal( Double.MIN_VALUE );
+		
+		for( int i = 0; i < allCandles.length( ); i++ )
+		{ 
+			JSONObject kline = allCandles.getJSONObject( i );
+			double high		 = Double.parseDouble( kline.getString( "high" ) );
+			System.out.println( high );
+			maxPrice 		 = new  BigDecimal ( Math.max( maxPrice.doubleValue( ), high ) );
+		}
+		
+		return maxPrice.setScale( 8, BigDecimal.ROUND_DOWN );
+	}
+	
+	/**
 	 * Internal method for building the API call
 	 * @param key
 	 * @param interval
@@ -89,7 +116,7 @@ public class NomicsExchangeCandles {
 		
 		try 
 		{
-			System.out.println( nomicsExchangeCandles.getMostRecentCandle( args[0], "1h", "gdax", "BTC-USD") );
+			System.out.println( nomicsExchangeCandles.getAllTimeHigh( args[0], "1D", "binance", "ENJETH") );
 		} 
 		catch ( IOException e ) 
 		{
