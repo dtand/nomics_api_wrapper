@@ -1,8 +1,10 @@
 package nomics.core;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -95,6 +97,75 @@ public class NomicsMarkets {
 		return marketsByExchange.toString( );
 	}
 	
+
+	/**
+	 * Layer two function for grabbing only markets from X exchanges that intersect
+	 * @return JSON object with all intersecting markets
+	 * @throws IOException 
+	 * @throws JSONException 
+	 */
+	public String getMarketIntersections( String[] exchanges, String apiKey ) throws JSONException, IOException
+	{
+		JSONArray markets = new JSONArray( getAllMarkets( apiKey ) );
+		return filterByIntersection( exchanges, markets );
+	}
+	
+	/**
+	 * Returns a JSONArray that contains only the markets (relative to the exchange) that intersect 
+	 * between both exchanges
+	 * @throws JSONException 
+	 */
+	public String filterByIntersection( String[] exchanges, JSONArray markets ) throws JSONException 
+	{
+		int totalExchanges 			 = exchanges.length;
+		Map< String, Integer > counts = new HashMap< String, Integer >( );
+		
+		//Iterate over provided exchanges
+		for( int i = 0; i < totalExchanges; i++ )
+		{
+			JSONArray exchangeMarkets = new JSONArray( filterByExchange( markets, exchanges[ i ] ) );
+			
+			//Increment pair if it exists
+			for( int j = 0; j < exchangeMarkets.length( ); j++ )
+			{
+				String base  = exchangeMarkets.getJSONObject( j ).getString( "base" );
+				String quote = exchangeMarkets.getJSONObject( j ).getString( "quote" );
+				
+				if( !counts.containsKey( base + quote ) )
+				{
+					counts.put( base + quote , 1 );
+				}
+				else
+				{
+					counts.put( base + quote,  counts.get( base + quote ) + 1 );
+				}
+			}
+		}
+		
+		JSONArray filteredJSON = new JSONArray( );
+		
+		//Iterate over provided exchanges again to pull all intersected exchanges
+		for( int i = 0; i < totalExchanges; i++ )
+		{
+			JSONArray exchangeMarkets = new JSONArray( filterByExchange( markets, exchanges[ i ] ) );
+			
+			//Increment pair if it exists
+			for( int j = 0; j < exchangeMarkets.length( ); j++ )
+			{
+				String base  = exchangeMarkets.getJSONObject( j ).getString( "base" );
+				String quote = exchangeMarkets.getJSONObject( j ).getString( "quote" );
+				
+				if( counts.get( base + quote ) == totalExchanges )
+				{
+					filteredJSON.put( exchangeMarkets.getJSONObject( j ) );
+				}
+			}
+		}
+		
+		return filteredJSON.toString( );
+		
+	}
+	
 	/**
 	 * Call to get a List of strings containing the currently supported exchanges
 	 * by the nomics API
@@ -144,6 +215,7 @@ public class NomicsMarkets {
 		{
 			System.out.println( nomicsMarkets.getAllMarkets( args[0] ) );
 			System.out.println( nomicsMarkets.getMarketsByExchange( args[0], "gdax" ) );
+			System.out.println( nomicsMarkets.getMarketIntersections( new String[] {"binance", "bittrex", "poloniex"}, args[0] ) );
 		} 
 		
 		catch ( IOException e ) 
