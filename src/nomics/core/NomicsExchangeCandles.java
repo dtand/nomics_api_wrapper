@@ -110,6 +110,12 @@ public class NomicsExchangeCandles {
 			{
 				open      = new BigDecimal( kline.getDouble( "open" ) );
 				timestamp = kline.getString( "timestamp" );
+				timestamp = "";
+				open      = new BigDecimal( 0 );
+				close  	  = new BigDecimal( 0 );
+				high  	  = new BigDecimal( 0 );
+				low	 	  = new BigDecimal( Double.MAX_VALUE );
+				volume 	  = new BigDecimal( 0 );
 			}
 			
 			//This is the end of the candle
