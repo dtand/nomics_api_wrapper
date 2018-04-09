@@ -33,19 +33,120 @@ public class NomicsExchangeCandles {
 	private static final String URL = "https://api.nomics.com/v1/exchange_candles?key=%s&interval=%s&exchange=%s&market=%s";
 	
 	/**
-	 * Method to grab all the candles by exchange for provided currency and interval. Valid values: 1d, 1h, 30m, 5m, 1m
+	 * Method to grab all the candles by exchange for provided currency and interval. Valid values: 1d, 1h, 30m, 5m, 1m.
+	 * This method can also accept 2h, 4h, 6h, 12h, but these are generated as a layer 2 function
 	 * @param key			The API key
 	 * @param interval		The iterval for the kline as a string: Valid values: 1d, 1h, 30m, 5m, 1m
 	 * @param exchange		The id for the exchange ie. "binance", "gdax" ...
 	 * @param symbol			The symbol for the currency of iterest, ie: "ETH", "LTC", "BTC"
 	 * @return				A string of klines representing a JSONArray
 	 * @throws IOException
+	 * @throws JSONException 
 	 */
-	public String getExchangeCandles( String key, String interval, String exchange, String symbol ) throws IOException
+	public String getExchangeCandles( String key, String interval, String exchange, String symbol ) throws IOException, JSONException
 	{
 		HttpsClient httpsClient = new HttpsClient( );
+		
+		
+		if( interval == "2h" || interval == "4h" || interval == "6h" || interval == "12h" ) 
+		{
+			String formattedURL  = buildURL( key, "1h", exchange, symbol );
+			JSONArray candles    = new JSONArray( httpsClient.doGet( formattedURL ) );
+			return createNewCandleSet( candles, interval );
+		}
+		
 		String formattedURL     = buildURL( key, interval, exchange, symbol );
 		return httpsClient.doGet( formattedURL );
+	}
+	
+	/**
+	 * Create a JSON array with a unqiue candle set not already provided by the API
+	 * @param candles
+	 * @param interval
+	 * @return
+	 * @throws JSONException 
+	 */
+	public String createNewCandleSet( JSONArray candles, String interval ) throws JSONException
+	{
+		JSONArray returnArray = new JSONArray( );
+		int hour = 2;
+		
+		switch( interval )
+		{
+		case "2h":
+			hour = 2;
+			break;
+		case "4h":
+			hour = 4;
+			break;
+		case "6h":
+			hour = 6;
+			break;
+		case "12h":
+			hour = 12;
+			break;
+		}
+		
+		String timestamp = "";
+		BigDecimal open  = new BigDecimal( 0 );
+		BigDecimal close = new BigDecimal( 0 );
+		BigDecimal high  = new BigDecimal( 0 );
+		BigDecimal low	 = new BigDecimal( Double.MAX_VALUE );
+		BigDecimal volume = new BigDecimal( 0 );
+		
+		for( int i = 0, c = 0; i < candles.length( ); i++ )
+		{
+			JSONObject kline = candles.getJSONObject( i ); 
+			
+			//Always grab the high and the low - we need to check these each time
+			BigDecimal klineHigh = new BigDecimal( kline.getDouble( "high" ) );
+			BigDecimal klineLow = new BigDecimal( kline.getDouble( "low" ) );
+			
+			high = new BigDecimal( Math.max( klineHigh.doubleValue( ), high.doubleValue( ) ) );
+			low  = new BigDecimal( Math.min( klineLow.doubleValue( ), low.doubleValue( ) ) );
+			
+			//This is the start of the candle
+			if( c == 0 )
+			{
+				open      = new BigDecimal( kline.getDouble( "open" ) );
+				timestamp = kline.getString( "timestamp" );
+			}
+			
+			//This is the end of the candle
+			if( c == hour )
+			{
+				close 			  = new BigDecimal( kline.getDouble( "close" ) );
+				String thisCandle = createKline( timestamp, open, close, high, low, volume );
+				c    			  = 0;
+				returnArray.put( thisCandle );
+			}
+			
+		}
+		
+		return returnArray.toString( );
+	}
+	
+	/**
+	 * Returns a kline candle JSON object
+	 * @param open
+	 * @param close
+	 * @param high
+	 * @param low
+	 * @param volume
+	 * @return
+	 * @throws JSONException
+	 */
+	protected String createKline( String timestamp, BigDecimal open, BigDecimal close, BigDecimal high, BigDecimal low, BigDecimal volume ) throws JSONException
+	{
+		
+		JSONObject candle = new JSONObject( );
+		candle.put( "timestamp", timestamp );
+		candle.put( "open", open );
+		candle.put( "close", close );
+		candle.put( "high", high );
+		candle.put( "low", low );
+		candle.put( "volume", volume );
+		return candle.toString( );
 	}
 	
 	/**
@@ -61,6 +162,9 @@ public class NomicsExchangeCandles {
 	public String getMostRecentCandle( String key, String interval, String exchange, String symbol ) throws JSONException, IOException
 	{
 		JSONArray allCandles = new JSONArray ( getExchangeCandles( key, interval, exchange, symbol ) );
+		
+		if( allCandles.length( ) == 0 )
+			return "{}";
 		
 		JSONObject lastCandle = allCandles.getJSONObject( allCandles.length( ) - 1 );
 		

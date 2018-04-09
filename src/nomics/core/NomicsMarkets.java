@@ -104,18 +104,18 @@ public class NomicsMarkets {
 	 * @throws IOException 
 	 * @throws JSONException 
 	 */
-	public String getMarketIntersections( String[] exchanges, String apiKey ) throws JSONException, IOException
+	public List< String > getMarketIntersections( String[] exchanges, String apiKey ) throws JSONException, IOException
 	{
 		JSONArray markets = new JSONArray( getAllMarkets( apiKey ) );
 		return filterByIntersection( exchanges, markets );
 	}
 	
 	/**
-	 * Returns a JSONArray that contains only the markets (relative to the exchange) that intersect 
-	 * between both exchanges
+	 * Returns a list of strings where each string is all the intesections for exchange[i] and each
+	 * string is a JSONArray
 	 * @throws JSONException 
 	 */
-	public String filterByIntersection( String[] exchanges, JSONArray markets ) throws JSONException 
+	public List< String > filterByIntersection( String[] exchanges, JSONArray markets ) throws JSONException 
 	{
 		int totalExchanges 			 = exchanges.length;
 		Map< String, Integer > counts = new HashMap< String, Integer >( );
@@ -142,13 +142,13 @@ public class NomicsMarkets {
 			}
 		}
 		
-		JSONArray filteredJSON = new JSONArray( );
+		List< String > marketsByExchange = new ArrayList< String >( );
 		
 		//Iterate over provided exchanges again to pull all intersected exchanges
 		for( int i = 0; i < totalExchanges; i++ )
 		{
 			JSONArray exchangeMarkets = new JSONArray( filterByExchange( markets, exchanges[ i ] ) );
-			
+			JSONArray filteredJSON    = new JSONArray( );
 			//Increment pair if it exists
 			for( int j = 0; j < exchangeMarkets.length( ); j++ )
 			{
@@ -160,9 +160,11 @@ public class NomicsMarkets {
 					filteredJSON.put( exchangeMarkets.getJSONObject( j ) );
 				}
 			}
+			
+			marketsByExchange.add( filteredJSON.toString( ) );
 		}
 		
-		return filteredJSON.toString( );
+		return marketsByExchange;
 		
 	}
 	
@@ -216,6 +218,7 @@ public class NomicsMarkets {
 			System.out.println( nomicsMarkets.getAllMarkets( args[0] ) );
 			System.out.println( nomicsMarkets.getMarketsByExchange( args[0], "gdax" ) );
 			System.out.println( nomicsMarkets.getMarketIntersections( new String[] {"binance", "bittrex", "poloniex"}, args[0] ) );
+			System.out.println( nomicsMarkets.getSupportedExchanges( args[0] ) );
 		} 
 		
 		catch ( IOException e ) 
