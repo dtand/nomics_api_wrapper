@@ -94,7 +94,9 @@ public class NomicsExchangeCandles {
 		BigDecimal low	 = new BigDecimal( Double.MAX_VALUE );
 		BigDecimal volume = new BigDecimal( 0 );
 		
-		for( int i = 0, c = 0; i < candles.length( ); i++ )
+		int c = 1;
+		
+		for( int i = 0; i < candles.length( ); i++ )
 		{
 			JSONObject kline = candles.getJSONObject( i ); 
 			
@@ -102,14 +104,28 @@ public class NomicsExchangeCandles {
 			BigDecimal klineHigh = new BigDecimal( kline.getDouble( "high" ) );
 			BigDecimal klineLow = new BigDecimal( kline.getDouble( "low" ) );
 			
-			high = new BigDecimal( Math.max( klineHigh.doubleValue( ), high.doubleValue( ) ) );
-			low  = new BigDecimal( Math.min( klineLow.doubleValue( ), low.doubleValue( ) ) );
+			high   = new BigDecimal( Math.max( klineHigh.doubleValue( ), high.doubleValue( ) ) );
+			low    = new BigDecimal( Math.min( klineLow.doubleValue( ), low.doubleValue( ) ) );
+			volume = volume.add( new BigDecimal( kline.getDouble("volume") ) );
 			
 			//This is the start of the candle
-			if( c == 0 )
+			if( c == 1 )
 			{
 				open      = new BigDecimal( kline.getDouble( "open" ) );
 				timestamp = kline.getString( "timestamp" );
+			}
+			
+			//This is the end of the candle
+			if( c == hour )
+			{
+				close 			  = new BigDecimal( kline.getDouble( "close" ) );
+				String thisCandle = createKline( timestamp, open.setScale( 8, BigDecimal.ROUND_DOWN ), 
+												close.setScale( 8, BigDecimal.ROUND_DOWN ), 
+												high.setScale( 8, BigDecimal.ROUND_DOWN ), 
+												low.setScale( 8, BigDecimal.ROUND_DOWN ),
+												volume.setScale( 8, BigDecimal.ROUND_DOWN ) );
+				c = 0;
+				returnArray.put( new JSONObject( thisCandle ) );
 				timestamp = "";
 				open      = new BigDecimal( 0 );
 				close  	  = new BigDecimal( 0 );
@@ -118,14 +134,7 @@ public class NomicsExchangeCandles {
 				volume 	  = new BigDecimal( 0 );
 			}
 			
-			//This is the end of the candle
-			if( c == hour )
-			{
-				close 			  = new BigDecimal( kline.getDouble( "close" ) );
-				String thisCandle = createKline( timestamp, open, close, high, low, volume );
-				c    			  = 0;
-				returnArray.put( thisCandle );
-			}
+			c++;
 			
 		}
 		
@@ -226,7 +235,7 @@ public class NomicsExchangeCandles {
 		
 		try 
 		{
-			System.out.println( nomicsExchangeCandles.getAllTimeHigh( args[0], "1D", "binance", "ENJETH") );
+			System.out.println( nomicsExchangeCandles.getExchangeCandles( args[0], "2h", "binance", "ETHBTC") );
 		} 
 		catch ( IOException e ) 
 		{
