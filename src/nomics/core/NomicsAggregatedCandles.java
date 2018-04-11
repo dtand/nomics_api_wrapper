@@ -65,7 +65,7 @@ public class NomicsAggregatedCandles {
 			}
 		}
 		
-		return "";
+		return returnCandles.toString( );
 	}
 	/**
 	 * Public method to grab all the aggregated candles for a given currency (symbol) from date == unixTimestamp

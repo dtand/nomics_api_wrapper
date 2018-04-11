@@ -75,6 +75,34 @@ public class NomicsMarkets {
 	}
 	
 	/**
+	 * Layer 2 filter for grabbing markets when the format of the pair is unknown
+	 * 
+	 * @param key				The API key
+	 * @param exchange			The exchange to filter off
+	 * @param base				The base currency as string
+	 * @param counter			The counter currency as string
+	 * @return
+	 * @throws JSONException
+	 * @throws IOException
+	 */	
+	public String getMarketFromPair( String key, String exchange, String base, String counter ) throws JSONException, IOException
+	{
+		JSONArray markets = new JSONArray ( getMarketsByExchange( key, exchange ) );
+		
+		for( int i = 0; i < markets.length( ); i++ )
+		{
+			JSONObject market = markets.getJSONObject( i );
+			
+			if( base.equalsIgnoreCase( market.getString( "base" ) ) && counter.equalsIgnoreCase( market.getString( "quote" ) ) )
+			{
+				return market.getString( "market" );
+			}
+		}
+		
+		return "";
+	}
+	
+	/**
 	 * Method to grab a json array of markets at the exchange level - provided some JSONArray
 	 * @param markets	JSONArray of market objects
 	 * @return
