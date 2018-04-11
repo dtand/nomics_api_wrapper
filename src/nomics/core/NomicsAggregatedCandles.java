@@ -1,5 +1,11 @@
 package nomics.core;
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import org.json.JSONArray;
+import org.json.JSONException;
 
 /**
  * Wrapper for the nomics aggregated candles API.  This class includes the vanilla API 
@@ -29,6 +35,39 @@ public class NomicsAggregatedCandles {
 	private static final String URL = "https://api.nomics.com/v1/candles?key=%s&interval=%s&currency=%s";
 	
 	/**
+	 * Allow the user to grab a candle set froma  specific timestamp
+	 * @param key
+	 * @param interval
+	 * @param symbol
+	 * @param timestamp
+	 * @return
+	 * @throws JSONException
+	 * @throws IOException
+	 * @throws ParseException
+	 */
+	public String getCandlesFromTimestamp( String key, String interval, String symbol, String timestamp ) throws JSONException, IOException, ParseException
+	{
+		//2018-03-19T10:00:00Z
+		JSONArray candles 		= new JSONArray( getCandles( key, interval, symbol ) );
+		JSONArray returnCandles = new JSONArray( );
+		
+		Boolean foundStamp = false;
+		for( int i = 0; i < candles.length( ); i++ )
+		{
+			if( candles.getJSONObject( i ).getString( "timestamp" ).equalsIgnoreCase( timestamp ) )
+			{
+				foundStamp = true;
+			}
+			
+			if( foundStamp )
+			{
+				returnCandles.put( candles.getJSONObject( i ) );
+			}
+		}
+		
+		return "";
+	}
+	/**
 	 * Public method to grab all the aggregated candles for a given currency (symbol) from date == unixTimestamp
 	 * @param key				The private API key
 	 * @param unixTimestamp		The date to grab the candles from ie. 'YYYY-MM-DDTHH:mm:ss.sssZ'
@@ -36,10 +75,10 @@ public class NomicsAggregatedCandles {
 	 * @return					A String representing a JSON array of candles
 	 * @throws IOException
 	 */
-	public String getCandlesFromTimestamp( String key, String unixTimestamp, String symbol ) throws IOException
+	public String getCandles( String key, String interval, String symbol ) throws IOException
 	{
 		HttpsClient httpsClient = new HttpsClient( );
-		String formattedURL     = buildURL( key, unixTimestamp, symbol );
+		String formattedURL     = buildURL( key, interval, symbol );
 		return httpsClient.doGet( formattedURL );
 	}
 	
@@ -64,7 +103,8 @@ public class NomicsAggregatedCandles {
 		
 		try
 		{
-			System.out.println( nomicsAggregatedCandles.getCandlesFromTimestamp( key, "2017-01-01", "ETH" ) );
+			//"2017-07-14T00:00:00Z"
+			System.out.println( nomicsAggregatedCandles.getCandlesFromTimestamp( key, "1d", "BTC", "2017-07-14T00:00:00Z" ) );
 		}
 		catch( Exception e )
 		{
