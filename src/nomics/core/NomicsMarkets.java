@@ -60,7 +60,8 @@ public class NomicsMarkets {
 	}
 	
 	/**
-	 * Layer 2 filter for grabbing markets at the exchange level
+	 * Layer 2 filter for grabbing markets at the exchange level - returns list of strings where all markets are in the form
+	 * BASE - QUOTE
 	 * 
 	 * @param key				The API key
 	 * @param exchange			The exchange to filter off
@@ -68,10 +69,11 @@ public class NomicsMarkets {
 	 * @throws JSONException
 	 * @throws IOException
 	 */	
-	public String getMarketsByExchange( String key, String exchange ) throws JSONException, IOException
+	public JSONArray getMarketsByExchange( String key, String exchange ) throws JSONException, IOException
 	{
 		JSONArray markets = new JSONArray ( getAllMarkets( key ) );
-		return filterByExchange( markets, exchange );
+		markets           = new JSONArray( filterByExchange( markets, exchange ) );
+		return markets;
 	}
 	
 	/**

@@ -1,6 +1,7 @@
 package nomics.core;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.text.ParseException;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -211,6 +212,39 @@ public class NomicsExchangeCandles {
 		
 		return maxPrice.setScale( 8, BigDecimal.ROUND_DOWN );
 	}
+	/**
+	 * Grab a candle from a given point in time
+	 * @param key
+	 * @param interval
+	 * @param symbol
+	 * @param timestamp
+	 * @return
+	 * @throws JSONException
+	 * @throws IOException
+	 * @throws ParseException
+	 */
+	public String getCandlesFromTimestamp( String key, String interval, String exchange, String symbol, String timestamp ) throws JSONException, IOException, ParseException
+	{
+		//2018-03-19T10:00:00Z
+		JSONArray candles 		= new JSONArray( getExchangeCandles( key, interval, exchange, symbol ) );
+		JSONArray returnCandles = new JSONArray( );
+		
+		Boolean foundStamp = false;
+		for( int i = 0; i < candles.length( ); i++ )
+		{
+			if( candles.getJSONObject( i ).getString( "timestamp" ).equalsIgnoreCase( timestamp ) )
+			{
+				foundStamp = true;
+			}
+			
+			if( foundStamp )
+			{
+				returnCandles.put( candles.getJSONObject( i ) );
+			}
+		}
+		
+		return returnCandles.toString( );
+	}
 	
 	/**
 	 * Internal method for building the API call
@@ -228,14 +262,16 @@ public class NomicsExchangeCandles {
 	/**
 	 * Public method to test internal functions using args for API key grabbing
 	 * @param args
+	 * @throws ParseException 
 	 */
-	public static void main( String args[] )
+	public static void main( String args[] ) throws ParseException
 	{
 		NomicsExchangeCandles nomicsExchangeCandles = new NomicsExchangeCandles( );
 		
 		try 
 		{
-			System.out.println( nomicsExchangeCandles.getExchangeCandles( args[0], "2h", "binance", "ETHBTC") );
+			System.out.println( nomicsExchangeCandles.getExchangeCandles( args[0], "1d", "gdax", "BTC-USD") );
+			System.out.println( nomicsExchangeCandles.getCandlesFromTimestamp( args[0], "1d", "gdax", "BTC-USD", "2015-01-09T00:00:00Z" ) );
 		} 
 		catch ( IOException e ) 
 		{
