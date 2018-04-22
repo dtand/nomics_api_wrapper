@@ -89,7 +89,7 @@ public class NomicsMarkets {
 	 */	
 	public String getMarketFromPair( String key, String exchange, String base, String counter ) throws JSONException, IOException
 	{
-		JSONArray markets = new JSONArray ( getMarketsByExchange( key, exchange ) );
+		JSONArray markets = getMarketsByExchange( key, exchange );
 		
 		for( int i = 0; i < markets.length( ); i++ )
 		{
@@ -249,6 +249,7 @@ public class NomicsMarkets {
 			System.out.println( nomicsMarkets.getMarketsByExchange( args[0], "gdax" ) );
 			System.out.println( nomicsMarkets.getMarketIntersections( new String[] {"binance", "bittrex", "poloniex"}, args[0] ) );
 			System.out.println( nomicsMarkets.getSupportedExchanges( args[0] ) );
+			System.out.println( nomicsMarkets.getMarketFromPair( args[0], "gdax", "BTC", "USD" ) );
 		} 
 		
 		catch ( IOException e ) 
