@@ -188,6 +188,34 @@ public class NomicsExchangeCandles {
 	}
 	
 	/**
+	 * Will grab the previous N Candles
+	 * @param key
+	 * @param interval
+	 * @param exchang
+	 * @param symbol
+	 * @param numCandles
+	 * @return
+	 * @throws IOException 
+	 * @throws JSONException 
+	 */
+	public String getLastNCandles( String key, String interval, String exchange, String symbol, int numCandles ) throws JSONException, IOException
+	{
+		JSONArray allCandles   = new JSONArray ( getExchangeCandles( key, interval, exchange, symbol ) );
+		JSONArray lastNCandles = new JSONArray( );
+		
+		if( allCandles.length( ) == 0 )
+			return "{}";
+		
+		//Loop starting from lastCandle - N
+		for( int i = ( allCandles.length( ) - numCandles ); i < allCandles.length( ); i++ )
+		{
+			lastNCandles.put( allCandles.get( i ) );
+		}
+		
+		return lastNCandles.toString( ); 
+	}
+	
+	/**
 	 * Returns the all time high of a given market pair at the exchange level
 	 * @param key		The private key for the nomics API
 	 * @param interval	Kline interval: Valid values: 1d, 1h, 30m, 5m, 1m
@@ -272,6 +300,7 @@ public class NomicsExchangeCandles {
 		{
 			System.out.println( nomicsExchangeCandles.getExchangeCandles( args[0], "1d", "gdax", "BTC-USD") );
 			System.out.println( nomicsExchangeCandles.getCandlesFromTimestamp( args[0], "1d", "gdax", "BTC-USD", "2015-01-09T00:00:00Z" ) );
+			System.out.println( nomicsExchangeCandles.getLastNCandles( args[0], "1d", "gdax", "BTC-USD", 25 ) );
 		} 
 		catch ( IOException e ) 
 		{
