@@ -61,7 +61,7 @@ public class NomicsMarkets {
 	
 	/**
 	 * Layer 2 filter for grabbing markets at the exchange level - returns list of strings where all markets are in the form
-	 * BASE - QUOTE
+	 * BASE-QUOTE
 	 * 
 	 * @param key				The API key
 	 * @param exchange			The exchange to filter off
@@ -249,7 +249,7 @@ public class NomicsMarkets {
 			System.out.println( nomicsMarkets.getMarketsByExchange( args[0], "gdax" ) );
 			System.out.println( nomicsMarkets.getMarketIntersections( new String[] {"binance", "bittrex", "poloniex"}, args[0] ) );
 			System.out.println( nomicsMarkets.getSupportedExchanges( args[0] ) );
-			System.out.println( nomicsMarkets.getMarketFromPair( args[0], "gdax", "BTC", "USD" ) );
+			System.out.println( nomicsMarkets.getMarketFromPair( args[0], "bittrex", "ZRX", "BTC" ) );
 		} 
 		
 		catch ( IOException e ) 

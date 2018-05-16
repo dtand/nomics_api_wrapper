@@ -2,6 +2,7 @@ package nomics.core;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.text.ParseException;
+import java.util.Stack;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -198,7 +199,7 @@ public class NomicsExchangeCandles {
 	 * @throws IOException 
 	 * @throws JSONException 
 	 */
-	public String getLastNCandles( String key, String interval, String exchange, String symbol, int numCandles ) throws JSONException, IOException
+	public String getLastNCandles( String key, String interval, String exchange, String symbol, int numCandles, boolean skipZeros ) throws JSONException, IOException
 	{
 		JSONArray allCandles   = new JSONArray ( getExchangeCandles( key, interval, exchange, symbol ) );
 		JSONArray lastNCandles = new JSONArray( );
@@ -206,10 +207,58 @@ public class NomicsExchangeCandles {
 		if( allCandles.length( ) == 0 )
 			return "{}";
 		
-		//Loop starting from lastCandle - N
-		for( int i = ( allCandles.length( ) - numCandles ); i < allCandles.length( ); i++ )
+		//Straigt up grab the last N candles ascending
+		if( !skipZeros )
 		{
-			lastNCandles.put( allCandles.get( i ) );
+			for( int i = ( allCandles.length( ) - numCandles ); i < allCandles.length( ); i++ )
+			{
+				lastNCandles.put( allCandles.get( i ) );
+			}
+		}
+		
+		//Grabs only non-zero candles descending - so resulting order will need to be reversed so we use a stack
+		else
+		{
+			int count = 0;
+			Stack< JSONObject > stack = new Stack< JSONObject >( );
+			JSONObject lastNonZeroCandle = null;
+			
+			for( int i = allCandles.length( ) - 1; i > 0; i-- )
+			{
+				Double volume = new Double( allCandles.getJSONObject( i ).getString( "volume" ) );
+				
+				if( volume == 0.0 )
+				{
+					String open  		   = lastNonZeroCandle.getString( "open" );
+					String close			   = lastNonZeroCandle.getString( "close" );
+					String high  		   = lastNonZeroCandle.getString( "high" );
+					String low   		   = lastNonZeroCandle.getString( "low" );
+					JSONObject pastCandle  = new JSONObject( );
+					pastCandle.put( "open", open );
+					pastCandle.put( "close", close );
+					pastCandle.put( "high", high );
+					pastCandle.put( "low", low );
+					pastCandle.put( "volume", allCandles.getJSONObject( i ).getString( "volume" ) );
+					pastCandle.put( "timestamp", allCandles.getJSONObject( i ).getString( "timestamp" ) );
+					stack.push( pastCandle );
+					continue;
+				}
+				else
+				{
+					stack.push( allCandles.getJSONObject( i ) );
+					count++;
+					lastNonZeroCandle = allCandles.getJSONObject( i );
+					
+					if( count == numCandles )
+						break;
+				}
+			}
+			
+			//Pop all objects off into json array
+			while( !stack.isEmpty( ) )
+			{
+				lastNCandles.put( stack.pop( ) );
+			}
 		}
 		
 		return lastNCandles.toString( ); 
@@ -298,13 +347,13 @@ public class NomicsExchangeCandles {
 		
 		try 
 		{
-			System.out.println( nomicsExchangeCandles.getExchangeCandles( args[0], "1d", "gdax", "BTC-USD") );
+			System.out.println( nomicsExchangeCandles.getExchangeCandles( args[0], "1d", "bittrex", "BTC-TRX") );
 			System.out.println( nomicsExchangeCandles.getCandlesFromTimestamp( args[0], "1d", "gdax", "BTC-USD", "2015-01-09T00:00:00Z" ) );
-			System.out.println( nomicsExchangeCandles.getLastNCandles( args[0], "1d", "gdax", "BTC-USD", 25 ) );
+			System.out.println( nomicsExchangeCandles.getLastNCandles( args[0], "1m", "binance", "ETCETH", 100, true ) );
 		} 
 		catch ( IOException e ) 
 		{
-			e.printStackTrace(); 
+			e.printStackTrace( ); 
 		}
 		catch( JSONException e )
 		{
