@@ -50,7 +50,7 @@ public class NomicsExchangeCandles {
 		HttpsClient httpsClient = new HttpsClient( );
 		
 		
-		if( interval == "2h" || interval == "4h" || interval == "6h" || interval == "12h" ) 
+		if( interval.equals( "2h" ) || interval.equals( "4h" ) || interval.equals( "6h" ) || interval.equals( "12h" ) ) 
 		{
 			String formattedURL  = buildURL( key, "1h", exchange, symbol );
 			JSONArray candles    = new JSONArray( httpsClient.doGet( formattedURL ) );
@@ -186,6 +186,35 @@ public class NomicsExchangeCandles {
 		JSONObject lastCandle = allCandles.getJSONObject( allCandles.length( ) - 1 );
 		
 		return lastCandle.toString( ); 
+	}
+	
+	/**
+	 * Second level filter to grab the most recent non-zero candle
+	 * @param key			API key
+	 * @param interval		Kline interval: Valid values: 1d, 1h, 30m, 5m, 1m
+	 * @param exchange		The id for the exchange ie. "binance", "gdax" ...
+	 * @param symbol			The symbol for the currency of iterest, ie: "ETH", "LTC", "BTC"
+	 * @return				A string of klines representing a JSONArray
+	 * @throws JSONException
+	 * @throws IOException
+	 */
+	public String getMostRecentNonZeroCandle( String key, String interval, String exchange, String symbol ) throws JSONException, IOException
+	{
+		JSONArray allCandles = new JSONArray ( getExchangeCandles( key, interval, exchange, symbol ) );
+		
+		if( allCandles.length( ) == 0 )
+			return "{}";
+		
+		for( int i = allCandles.length( )-1; i > 0; i-- ) {
+			if( new Double( allCandles.getJSONObject( i ).getString( "close") ) == 0 ) {
+				continue;
+			}
+			else {
+				return allCandles.getJSONObject( i ).toString( );
+			}
+		}
+		
+		return "{}";
 	}
 	
 	/**
@@ -347,9 +376,13 @@ public class NomicsExchangeCandles {
 		
 		try 
 		{
-			System.out.println( nomicsExchangeCandles.getExchangeCandles( args[0], "1d", "bittrex", "BTC-TRX") );
-			System.out.println( nomicsExchangeCandles.getCandlesFromTimestamp( args[0], "1d", "gdax", "BTC-USD", "2015-01-09T00:00:00Z" ) );
-			System.out.println( nomicsExchangeCandles.getLastNCandles( args[0], "1m", "binance", "ETCETH", 100, true ) );
+			System.out.println( nomicsExchangeCandles.getExchangeCandles( args[0], "1h", "bittrex", "BTC-TRX") );
+			System.out.println( nomicsExchangeCandles.getExchangeCandles( args[0], "2h", "bittrex", "BTC-TRX") );
+			System.out.println( nomicsExchangeCandles.getExchangeCandles( args[0], "4h", "bittrex", "BTC-TRX") );
+			System.out.println( nomicsExchangeCandles.getExchangeCandles( args[0], "6h", "bittrex", "BTC-TRX") );
+			System.out.println( nomicsExchangeCandles.getExchangeCandles( args[0], "12h", "bittrex", "BTC-TRX") );
+			//System.out.println( nomicsExchangeCandles.getCandlesFromTimestamp( args[0], "1d", "gdax", "BTC-USD", "2015-01-09T00:00:00Z" ) );
+			//System.out.println( nomicsExchangeCandles.getLastNCandles( args[0], "1m", "binance", "ETCETH", 100, true ) );
 		} 
 		catch ( IOException e ) 
 		{

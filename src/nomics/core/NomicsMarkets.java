@@ -187,6 +187,7 @@ public class NomicsMarkets {
 				
 				if( counts.get( base + quote ) == totalExchanges )
 				{
+					//JSONObject newJson = exchange.put( )
 					filteredJSON.put( exchangeMarkets.getJSONObject( j ) );
 				}
 			}
@@ -246,20 +247,17 @@ public class NomicsMarkets {
 		try 
 		{
 			System.out.println( nomicsMarkets.getAllMarkets( args[0] ) );
-			System.out.println( nomicsMarkets.getMarketsByExchange( args[0], "gdax" ) );
-			System.out.println( nomicsMarkets.getMarketIntersections( new String[] {"binance", "bittrex", "poloniex"}, args[0] ) );
-			System.out.println( nomicsMarkets.getSupportedExchanges( args[0] ) );
-			System.out.println( nomicsMarkets.getMarketFromPair( args[0], "bittrex", "ZRX", "BTC" ) );
+			//System.out.println( nomicsMarkets.getAllMarkets( args[0] ) );
+			//System.out.println( nomicsMarkets.getMarketsByExchange( args[0], "gdax" ) );
+			//System.out.println( nomicsMarkets.getMarketIntersections( new String[] {"binance","bitfinex"}, args[0] ) );
+			//System.out.println( nomicsMarkets.getSupportedExchanges( args[0] ) );
+			//System.out.println( nomicsMarkets.getMarketFromPair( args[0], "gdax", "ETH", "BTC" ) );
 		} 
 		
-		catch ( IOException e ) 
+		catch ( Exception e) 
 		{
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
-		catch( JSONException e )
-		{
-			e.printStackTrace( );
 		}
 	}
 	
