@@ -58,7 +58,43 @@ public class NomicsExchangeCandles {
 		}
 		
 		String formattedURL     = buildURL( key, interval, exchange, symbol );
-		return httpsClient.doGet( formattedURL );
+		return replaceZeroCandles( httpsClient.doGet( formattedURL ) );
+	}
+	
+	/**
+	 * Internal method to replace all 0 candles with their previous price
+	 * @param candles
+	 * @return
+	 * @throws JSONException
+	 */
+	private String replaceZeroCandles( String candles ) throws JSONException {
+		
+		JSONArray candlesArray   	= new JSONArray( candles );
+		JSONArray returnArray    	= new JSONArray( );
+		JSONObject lastNonZeroCandle = null;
+		
+		for( int i = 0; i < candlesArray.length( ); i++ ) {
+			
+			JSONObject object = candlesArray.getJSONObject( i );
+			Double price      = new Double( object.getString( "close") );
+			
+			if( price == new Double( 0 ) ) {
+				
+				if( lastNonZeroCandle == null ){
+					continue;
+				}
+				
+				returnArray.put( lastNonZeroCandle );
+			}
+			else{
+				returnArray.put( object );
+				lastNonZeroCandle = object;
+			}
+			
+		}
+		
+		return returnArray.toString( );
+		
 	}
 	
 	/**
