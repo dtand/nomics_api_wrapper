@@ -77,8 +77,8 @@ public class NomicsExchangeCandles {
 			
 			JSONObject object = candlesArray.getJSONObject( i );
 			Double price      = new Double( object.getString( "close") );
-			
-			if( price == new Double( 0 ) ) {
+
+			if( price.equals( new Double( 0 ) ) ) {
 				
 				if( lastNonZeroCandle == null ){
 					continue;
@@ -412,11 +412,11 @@ public class NomicsExchangeCandles {
 		
 		try 
 		{
-			System.out.println( nomicsExchangeCandles.getExchangeCandles( args[0], "1h", "bittrex", "BTC-TRX") );
-			System.out.println( nomicsExchangeCandles.getExchangeCandles( args[0], "2h", "bittrex", "BTC-TRX") );
-			System.out.println( nomicsExchangeCandles.getExchangeCandles( args[0], "4h", "bittrex", "BTC-TRX") );
-			System.out.println( nomicsExchangeCandles.getExchangeCandles( args[0], "6h", "bittrex", "BTC-TRX") );
-			System.out.println( nomicsExchangeCandles.getExchangeCandles( args[0], "12h", "bittrex", "BTC-TRX") );
+			System.out.println( nomicsExchangeCandles.getExchangeCandles( args[0], "1d", "gdax", "ETH-USD") );
+			//System.out.println( nomicsExchangeCandles.getExchangeCandles( args[0], "2h", "bittrex", "BTC-TRX") );
+			//System.out.println( nomicsExchangeCandles.getExchangeCandles( args[0], "4h", "bittrex", "BTC-TRX") );
+			//System.out.println( nomicsExchangeCandles.getExchangeCandles( args[0], "6h", "bittrex", "BTC-TRX") );
+			//System.out.println( nomicsExchangeCandles.getExchangeCandles( args[0], "12h", "bittrex", "BTC-TRX") );
 			//System.out.println( nomicsExchangeCandles.getCandlesFromTimestamp( args[0], "1d", "gdax", "BTC-USD", "2015-01-09T00:00:00Z" ) );
 			//System.out.println( nomicsExchangeCandles.getLastNCandles( args[0], "1m", "binance", "ETCETH", 100, true ) );
 		} 
