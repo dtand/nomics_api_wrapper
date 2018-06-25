@@ -53,8 +53,9 @@ public class NomicsExchangeCandles {
 		if( interval.equals( "2h" ) || interval.equals( "4h" ) || interval.equals( "6h" ) || interval.equals( "12h" ) ) 
 		{
 			String formattedURL  = buildURL( key, "1h", exchange, symbol );
-			JSONArray candles    = new JSONArray( httpsClient.doGet( formattedURL ) );
-			return createNewCandleSet( candles, interval );
+			String candles   	 = httpsClient.doGet( formattedURL );
+			JSONArray candlesA	 = new JSONArray( replaceZeroCandles( candles ) );
+			return createNewCandleSet( candlesA, interval );
 		}
 		
 		String formattedURL     = buildURL( key, interval, exchange, symbol );
@@ -83,8 +84,9 @@ public class NomicsExchangeCandles {
 				if( lastNonZeroCandle == null ){
 					continue;
 				}
-				
-				returnArray.put( lastNonZeroCandle );
+				JSONObject newCandle = lastNonZeroCandle;
+				newCandle.put( "timestamp", object.get( "timestamp" ) );
+				returnArray.put( newCandle );
 			}
 			else{
 				returnArray.put( object );
