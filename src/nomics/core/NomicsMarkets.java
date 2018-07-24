@@ -246,9 +246,9 @@ public class NomicsMarkets {
 		
 		try 
 		{
-			System.out.println( nomicsMarkets.getAllMarkets( args[0] ) );
 			//System.out.println( nomicsMarkets.getAllMarkets( args[0] ) );
-			//System.out.println( nomicsMarkets.getMarketsByExchange( args[0], "gdax" ) );
+			//System.out.println( nomicsMarkets.getAllMarkets( args[0] ) );
+			System.out.println( nomicsMarkets.getMarketsByExchange( args[0], "gemini" ) );
 			//System.out.println( nomicsMarkets.getMarketIntersections( new String[] {"binance","bitfinex"}, args[0] ) );
 			//System.out.println( nomicsMarkets.getSupportedExchanges( args[0] ) );
 			//System.out.println( nomicsMarkets.getMarketFromPair( args[0], "gdax", "ETH", "BTC" ) );

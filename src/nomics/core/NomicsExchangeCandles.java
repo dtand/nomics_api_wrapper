@@ -50,7 +50,7 @@ public class NomicsExchangeCandles {
 		HttpsClient httpsClient = new HttpsClient( );
 		
 		
-		if( interval.equals( "2h" ) || interval.equals( "4h" ) || interval.equals( "6h" ) || interval.equals( "12h" ) ) 
+		if( interval.equals( "2h" ) || interval.equals( "6h" ) || interval.equals( "12h" ) ) 
 		{
 			String formattedURL  = buildURL( key, "1h", exchange, symbol );
 			String candles   	 = httpsClient.doGet( formattedURL );
@@ -85,7 +85,7 @@ public class NomicsExchangeCandles {
 					continue;
 				}
 				JSONObject newCandle = lastNonZeroCandle;
-				newCandle.put( "timestamp", object.get( "timestamp" ) );
+				newCandle.put( "timestamp", object.getString( "timestamp" ) );
 				returnArray.put( newCandle );
 			}
 			else{
@@ -113,18 +113,15 @@ public class NomicsExchangeCandles {
 		
 		switch( interval )
 		{
-		case "2h":
-			hour = 2;
-			break;
-		case "4h":
-			hour = 4;
-			break;
-		case "6h":
-			hour = 6;
-			break;
-		case "12h":
-			hour = 12;
-			break;
+			case "2h":
+				hour = 2;
+				break;
+			case "6h":
+				hour = 6;
+				break;
+			case "12h":
+				hour = 12;
+				break;
 		}
 		
 		String timestamp = "";
@@ -414,7 +411,7 @@ public class NomicsExchangeCandles {
 		
 		try 
 		{
-			System.out.println( nomicsExchangeCandles.getExchangeCandles( args[0], "1d", "gdax", "ETH-USD") );
+			System.out.println( nomicsExchangeCandles.getExchangeCandles( args[0], "4h", "gdax", "ETH-USD") );
 			//System.out.println( nomicsExchangeCandles.getExchangeCandles( args[0], "2h", "bittrex", "BTC-TRX") );
 			//System.out.println( nomicsExchangeCandles.getExchangeCandles( args[0], "4h", "bittrex", "BTC-TRX") );
 			//System.out.println( nomicsExchangeCandles.getExchangeCandles( args[0], "6h", "bittrex", "BTC-TRX") );
