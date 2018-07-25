@@ -8,7 +8,6 @@
   
   <version>0.0.1-SNAPSHOT</version>
   
-  <packaging>jar</packaging>
   
   <name>nomics-api-wrapper</name>
   <description>A simple and intuitive wrapper for the nomics API</description>
@@ -24,7 +23,7 @@
    <developers>
     <developer>
       <name>Daniel Anderson</name>
-      <email>dtanderson005@gmail.com</email>
+      <email>daniel@travas.io</email>
       <organization>Travas Research</organization>
       <organizationUrl>http://www.travas.io</organizationUrl>
     </developer>

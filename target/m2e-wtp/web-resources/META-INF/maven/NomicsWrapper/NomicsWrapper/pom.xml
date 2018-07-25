@@ -8,6 +8,7 @@
   
   <version>0.0.1-SNAPSHOT</version>
   
+  <packaging>war</packaging>
   
   <name>nomics-api-wrapper</name>
   <description>A simple and intuitive wrapper for the nomics API</description>

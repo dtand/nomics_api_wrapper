@@ -84,7 +84,7 @@ public class NomicsExchangeCandles {
 				if( lastNonZeroCandle == null ){
 					continue;
 				}
-				JSONObject newCandle = lastNonZeroCandle;
+				JSONObject newCandle = new JSONObject( lastNonZeroCandle.toString( ) );
 				newCandle.put( "timestamp", object.getString( "timestamp" ) );
 				returnArray.put( newCandle );
 			}
@@ -411,7 +411,7 @@ public class NomicsExchangeCandles {
 		
 		try 
 		{
-			System.out.println( nomicsExchangeCandles.getExchangeCandles( args[0], "4h", "gdax", "ETH-USD") );
+			System.out.println( nomicsExchangeCandles.getExchangeCandles( args[0], "5m", "kraken", "XXRPZUSD") );
 			//System.out.println( nomicsExchangeCandles.getExchangeCandles( args[0], "2h", "bittrex", "BTC-TRX") );
 			//System.out.println( nomicsExchangeCandles.getExchangeCandles( args[0], "4h", "bittrex", "BTC-TRX") );
 			//System.out.println( nomicsExchangeCandles.getExchangeCandles( args[0], "6h", "bittrex", "BTC-TRX") );
