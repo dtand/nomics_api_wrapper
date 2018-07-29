@@ -283,6 +283,8 @@ public class NomicsExchangeCandles {
 		
 		Stack< JSONObject > stack = new Stack< JSONObject >( );
 		
+		numCandles = Math.min( allCandles.length( ), numCandles );
+		
 		for( int i = allCandles.length( ) - 1; i >= allCandles.length( ) - numCandles; i-- )
 		{
 			stack.push( allCandles.getJSONObject( i ) );
@@ -380,7 +382,7 @@ public class NomicsExchangeCandles {
 		
 		try 
 		{
-			System.out.println( nomicsExchangeCandles.getLastNCandles( args[0], "5m", "bitfinex", "bcibtc", 25 ) );
+			System.out.println( nomicsExchangeCandles.getLastNCandles( args[0], "5m", "bitfinex", "bcibtc", 25, CANDLE_FILTER_MODE.OMIT_ZEROS ) );
 			//System.out.println( nomicsExchangeCandles.getExchangeCandles( args[0], "2h", "bittrex", "BTC-TRX") );
 			//System.out.println( nomicsExchangeCandles.getExchangeCandles( args[0], "4h", "bittrex", "BTC-TRX") );
 			//System.out.println( nomicsExchangeCandles.getExchangeCandles( args[0], "6h", "bittrex", "BTC-TRX") );
