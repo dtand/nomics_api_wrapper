@@ -29,6 +29,8 @@ import org.json.JSONObject;
  */
 public class NomicsExchangeCandles {
 
+	public enum CANDLE_FILTER_MODE { NONE, REPLACE_ZEROS, OMIT_ZEROS };
+	
 	/**
 	 * URL for grabbing all the aggregated candles for a specific currency
 	 */
@@ -45,7 +47,7 @@ public class NomicsExchangeCandles {
 	 * @throws IOException
 	 * @throws JSONException 
 	 */
-	public String getExchangeCandles( String key, String interval, String exchange, String symbol ) throws IOException, JSONException
+	public String getExchangeCandles( String key, String interval, String exchange, String symbol, CANDLE_FILTER_MODE candleFilterMode ) throws IOException, JSONException
 	{
 		HttpsClient httpsClient = new HttpsClient( );
 		
@@ -58,8 +60,45 @@ public class NomicsExchangeCandles {
 			return createNewCandleSet( candlesA, interval );
 		}
 		
-		String formattedURL     = buildURL( key, interval, exchange, symbol );
-		return replaceZeroCandles( httpsClient.doGet( formattedURL ) );
+		String formattedURL = buildURL( key, interval, exchange, symbol );
+		String candles      =  httpsClient.doGet( formattedURL );
+		
+		if( candleFilterMode == CANDLE_FILTER_MODE.REPLACE_ZEROS ) {
+			return replaceZeroCandles( candles );
+		}
+		else if( candleFilterMode == CANDLE_FILTER_MODE.OMIT_ZEROS  ) {
+			return omitZeroCandles( candles );
+		}
+		
+		return candles;
+	}
+	
+	/**
+	 * Internal method to return all exchange candles, with all 0-volume
+	 * candles omitted 
+	 * @return
+	 * @throws JSONException 
+	 */
+	private String omitZeroCandles( String candles ) throws JSONException {
+		
+		JSONArray candlesArray   	= new JSONArray( candles );
+		JSONArray returnArray    	= new JSONArray( );
+		
+		for( int i = 0; i < candlesArray.length( ); i++ ) {
+			
+			JSONObject object = candlesArray.getJSONObject( i );
+			Double price      = new Double( object.getString( "close") );
+
+			if( price.equals( new Double( 0 ) ) ) {
+				continue;
+			}
+			else{
+				returnArray.put( object );
+			}
+			
+		}
+		
+		return returnArray.toString( );
 	}
 	
 	/**
@@ -213,7 +252,7 @@ public class NomicsExchangeCandles {
 	 */
 	public String getMostRecentCandle( String key, String interval, String exchange, String symbol ) throws JSONException, IOException
 	{
-		JSONArray allCandles = new JSONArray ( getExchangeCandles( key, interval, exchange, symbol ) );
+		JSONArray allCandles = new JSONArray ( getExchangeCandles( key, interval, exchange, symbol, CANDLE_FILTER_MODE.NONE ) );
 		
 		if( allCandles.length( ) == 0 )
 			return "{}";
@@ -221,35 +260,6 @@ public class NomicsExchangeCandles {
 		JSONObject lastCandle = allCandles.getJSONObject( allCandles.length( ) - 1 );
 		
 		return lastCandle.toString( ); 
-	}
-	
-	/**
-	 * Second level filter to grab the most recent non-zero candle
-	 * @param key			API key
-	 * @param interval		Kline interval: Valid values: 1d, 1h, 30m, 5m, 1m
-	 * @param exchange		The id for the exchange ie. "binance", "gdax" ...
-	 * @param symbol			The symbol for the currency of iterest, ie: "ETH", "LTC", "BTC"
-	 * @return				A string of klines representing a JSONArray
-	 * @throws JSONException
-	 * @throws IOException
-	 */
-	public String getMostRecentNonZeroCandle( String key, String interval, String exchange, String symbol ) throws JSONException, IOException
-	{
-		JSONArray allCandles = new JSONArray ( getExchangeCandles( key, interval, exchange, symbol ) );
-		
-		if( allCandles.length( ) == 0 )
-			return "{}";
-		
-		for( int i = allCandles.length( )-1; i > 0; i-- ) {
-			if( new Double( allCandles.getJSONObject( i ).getString( "close") ) == 0 ) {
-				continue;
-			}
-			else {
-				return allCandles.getJSONObject( i ).toString( );
-			}
-		}
-		
-		return "{}";
 	}
 	
 	/**
@@ -265,7 +275,7 @@ public class NomicsExchangeCandles {
 	 */
 	public String getLastNCandles( String key, String interval, String exchange, String symbol, int numCandles ) throws JSONException, IOException
 	{
-		JSONArray allCandles   = new JSONArray ( getExchangeCandles( key, interval, exchange, symbol ) );
+		JSONArray allCandles   = new JSONArray ( getExchangeCandles( key, interval, exchange, symbol, CANDLE_FILTER_MODE.NONE ) );
 		JSONArray lastNCandles = new JSONArray( );
 		
 		if( allCandles.length( ) == 0 )
@@ -299,7 +309,7 @@ public class NomicsExchangeCandles {
 	 */
 	public BigDecimal getAllTimeHigh( String key, String interval, String exchange, String symbol ) throws JSONException, IOException
 	{
-		JSONArray allCandles = new JSONArray ( getExchangeCandles( key, interval, exchange, symbol ) );
+		JSONArray allCandles = new JSONArray ( getExchangeCandles( key, interval, exchange, symbol, CANDLE_FILTER_MODE.NONE ) );
 		BigDecimal maxPrice  = new BigDecimal( Double.MIN_VALUE );
 		
 		for( int i = 0; i < allCandles.length( ); i++ )
@@ -326,7 +336,7 @@ public class NomicsExchangeCandles {
 	public String getCandlesFromTimestamp( String key, String interval, String exchange, String symbol, String timestamp ) throws JSONException, IOException, ParseException
 	{
 		//2018-03-19T10:00:00Z
-		JSONArray candles 		= new JSONArray( getExchangeCandles( key, interval, exchange, symbol ) );
+		JSONArray candles 		= new JSONArray( getExchangeCandles( key, interval, exchange, symbol, CANDLE_FILTER_MODE.NONE ) );
 		JSONArray returnCandles = new JSONArray( );
 		
 		Boolean foundStamp = false;
