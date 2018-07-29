@@ -273,9 +273,9 @@ public class NomicsExchangeCandles {
 	 * @throws IOException 
 	 * @throws JSONException 
 	 */
-	public String getLastNCandles( String key, String interval, String exchange, String symbol, int numCandles ) throws JSONException, IOException
+	public String getLastNCandles( String key, String interval, String exchange, String symbol, int numCandles, CANDLE_FILTER_MODE candleFilterMode ) throws JSONException, IOException
 	{
-		JSONArray allCandles   = new JSONArray ( getExchangeCandles( key, interval, exchange, symbol, CANDLE_FILTER_MODE.NONE ) );
+		JSONArray allCandles   = new JSONArray ( getExchangeCandles( key, interval, exchange, symbol, candleFilterMode ) );
 		JSONArray lastNCandles = new JSONArray( );
 		
 		if( allCandles.length( ) == 0 )
